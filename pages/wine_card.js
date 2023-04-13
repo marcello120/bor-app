@@ -15,17 +15,6 @@ const wine_card = () => {
                 ar={6690}
                 imageUrl="https://borhalo.com/shop/image/cache/catalog/Mesz_Kadarka_Premium_17_0,75-572x800.png"
             />
-            <WineCard
-                            termek={wine.termek}
-                            evjarat={wine.evjarat}
-                            szin={wine.szin}
-                            karakter={wine.karakter}
-                            kategoria={wine.kategoria}
-                            borvidek={wine.borvidek}
-                            kiszereles={wine.kiszereles}
-                            ar={wine.ar}
-                            imageUrl="https://borhalo.com/shop/image/cache/catalog/Mesz_Kadarka_Premium_17_0,75-572x800.png"
-                        />
         </div>
     )
 }
