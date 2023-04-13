@@ -2,20 +2,38 @@ import React, { useState, useMemo, useRef, useEffect } from 'react'
 import styles from '@/styles/Bortinder.module.css'
 import TinderCard from 'react-tinder-card'
 import WineCard from './WineCard'
-import {wines } from '../data/wines'
+import { wines } from '../data/wines'
 import Image from 'next/image'
 import backIcon from '@/public/rotate-left-solid.svg'
-
-// const TinderCard = dynamic(() => import('react-tinder-card'), {
-//     ssr: false
-// });
+import ResultCard from './ResultCard'
 
 const db = wines;
 
-function BorTinderPage () {
+function BorTinderPage() {
+
+  useEffect(() => {
+    // Hide the URL address bar of the browser on page load
+    const hideAddressBar = () => {
+      if (window.innerHeight <= 650) {
+        window.scrollTo(0, 1);
+      }
+    };
+    hideAddressBar();
+
+    // Hide the URL address bar of the browser on scroll
+    window.addEventListener('scroll', hideAddressBar);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      window.removeEventListener('scroll', hideAddressBar);
+    };
+  }, []);
+
+
+
   const [currentIndex, setCurrentIndex] = useState(db.length - 1)
   const [lastDirection, setLastDirection] = useState()
-  const [pickedWines,setPickedWines] = useState(new Set())
+  const [pickedWines, setPickedWines] = useState(new Set())
   // used for outOfFrame closure
   const currentIndexRef = useRef(currentIndex)
   const childRefs = useMemo(
@@ -37,12 +55,19 @@ function BorTinderPage () {
 
   // set last direction and decrease current index
   const swiped = (direction, nameToDelete, index) => {
-    if(direction == "right"){
-        console.log(direction);
-        console.log(db[index]);
-        console.log(pickedWines)
-        setPickedWines(prevList => new Set(prevList.add(db[index])))
-        console.log(pickedWines)
+    if (direction == "right") {
+      console.log(direction);
+      console.log(db[index]);
+      console.log(pickedWines)
+      setPickedWines(prevList => new Set(prevList.add(db[index])))
+      console.log(pickedWines)
+    }
+    if (direction !== "right") {
+      console.log(direction);
+      console.log(db[index]);
+      console.log(pickedWines)
+      setPickedWines(prevList => new Set([...prevList].filter(item => item !== db[index])))
+      console.log(pickedWines)
     }
     setLastDirection(direction)
     updateCurrentIndex(index - 1)
@@ -70,61 +95,69 @@ function BorTinderPage () {
     updateCurrentIndex(newIndex)
     const cr = await childRefs[newIndex].current;
     cr.restoreCard();
+    console.log(currentIndex)
   }
 
   return (
     <div className={styles.root}>
-        <div className={styles.rootdiv}>
-      <link
-        href='https://fonts.googleapis.com/css?family=Damion&display=swap'
-        rel='stylesheet'
-      />
-      <link
-        href='https://fonts.googleapis.com/css?family=Alatsi&display=swap'
-        rel='stylesheet'
-      />
-      <h1 className={styles.h1}>BorTinder</h1>
-      <h1 className={styles.bornum}>{db.length} / {db.length} </h1>
+      <div className={styles.rootdiv}>
+        <link
+          href='https://fonts.googleapis.com/css?family=Damion&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css?family=Alatsi&display=swap'
+          rel='stylesheet'
+        />
+        <h1 className={styles.h1}>BorTinder</h1>
+        <h1 className={styles.bornum}>{db.length - currentIndex - 1} / {db.length} </h1>
+        {(lastDirection && (currentIndex + 2  <= db.length)) ? (
+          <p key={lastDirection} className={styles.infoText}>
+            {db[currentIndex+1].termek} {((lastDirection==='right') ? <> ✔</> : <> ✘ </> )}
+          </p>
+        ) : (
+          <div className={styles.infoTextContainer}>
+            <p className={styles.infoText}>
+              Húzd jobbra ha lehúznád ✔, balra ha nem ✘!
+            </p>
+          </div>
+        )}
+        <div className={styles.cardContainer}>
+          <>
+          {db.map((wine, index) => (
+            <TinderCard
+              ref={childRefs[index]}
+              className={styles.swipe}
+              key={wine.termek}
+              onSwipe={(dir) => swiped(dir, wine.termek, index)}
+              onCardLeftScreen={() => outOfFrame(wine.termek, index)}
+            >
+              <WineCard
+                termek={wine.termek}
+                evjarat={wine.evjarat}
+                szin={wine.szin}
+                karakter={wine.karakter}
+                kategoria={wine.kategoria}
+                borvidek={wine.borvidek}
+                kiszereles={wine.kiszereles}
+                ar={wine.ar}
+                imageUrl={wine.imageUrl}
+              />
+            </TinderCard>
+          ))}
+          </>
+          <>
+          <ResultCard wines={[...pickedWines]}></ResultCard>
+          </>
+        </div>
+        <div className={styles.buttons}>
+          <button style={{ backgroundColor: !canSwipe && '#c3c4d3' }} onClick={() => swipe('left')}>&lt;</button>
+          <button style={{ backgroundColor: !canGoBack && '#c3c4d3' }} onClick={() => goBack()}>
+          ↺
+          </button>
+          <button style={{ backgroundColor: !canSwipe && '#c3c4d3' }} onClick={() => swipe('right')}>&gt;</button>
+        </div>
 
-      <div className={styles.cardContainer}>
-        {db.map((wine, index) => (
-          <TinderCard
-            ref={childRefs[index]}
-            className={styles.swipe}
-            key={wine.termek}
-            onSwipe={(dir) => swiped(dir, wine.termek, index)}
-            onCardLeftScreen={() => outOfFrame(wine.termek, index)}
-          >
-            <WineCard
-                            termek={wine.termek}
-                            evjarat={wine.evjarat}
-                            szin={wine.szin}
-                            karakter={wine.karakter}
-                            kategoria={wine.kategoria}
-                            borvidek={wine.borvidek}
-                            kiszereles={wine.kiszereles}
-                            ar={wine.ar}
-                            imageUrl={wine.imageUrl}
-                        />
-          </TinderCard>
-        ))}
-      </div>
-      <div className={styles.buttons}>
-        <button style={{ backgroundColor: !canSwipe && '#c3c4d3' }} onClick={() => swipe('left')}>&lt;</button>
-        <button style={{ backgroundColor: !canGoBack && '#c3c4d3' }} onClick={() => goBack()}>
-          {/* <Image layout='fill' src={backIcon}></Image> */} R
-        </button>
-        <button style={{ backgroundColor: !canSwipe && '#c3c4d3' }} onClick={() => swipe('right')}>&gt;</button>
-      </div>
-      {/* {lastDirection ? (
-        <h2 key={lastDirection} className='infoText'>
-          You swiped {lastDirection}
-        </h2>
-      ) : (
-        <h2 className='infoText'>
-          Swipe a card or press a button to get Restore Card button visible!
-        </h2>
-      )} */}
       </div>
     </div>
   )
