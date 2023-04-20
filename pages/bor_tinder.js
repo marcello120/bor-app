@@ -30,7 +30,7 @@ const bor_tinder = ({wines}) => {
 export async function getServerSideProps() {
   
   // Fetch data from external API
-  const res = await fetch(`http://localhost:3000/api/getXrandom`)
+  const res = await fetch(process.env.HOME_URL + "/api/getXrandom")
   const data = await res.json()
 
   // Pass data to the page via props
