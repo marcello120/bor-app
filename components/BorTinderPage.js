@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import styles from '@/styles/Bortinder.module.css'
 import TinderCard from 'react-tinder-card'
 import WineCard from './WineCard'
-import { wines } from '../data/wines'
 import ResultCard from './ResultCard'
+
+let pickedWinesSet = new Set();
 
 
 function BorTinderPage(props) {
@@ -22,7 +23,7 @@ function BorTinderPage(props) {
         .fill(0)
         .map((i) => React.createRef()),
     []
-  )
+  ,[])
 
   const updateCurrentIndex = (val) => {
     setCurrentIndex(val)
@@ -38,19 +39,26 @@ function BorTinderPage(props) {
     if (direction == "right") {
       console.log(direction);
       console.log(db[index]);
-      console.log(pickedWines)
-      setPickedWines(prevList => new Set(prevList.add(db[index])))
-      console.log(pickedWines)
+      console.log(pickedWinesSet)
+      pickedWinesSet.add(db[index])
+      // setPickedWines(prevList => new Set(prevList.add(db[index])))
+      console.log(pickedWinesSet)
     }
     if (direction !== "right") {
       console.log(direction);
       console.log(db[index]);
       console.log(pickedWines)
-      setPickedWines(prevList => new Set([...prevList].filter(item => item !== db[index])))
+      // setPickedWines(prevList => new Set([...prevList].filter(item => item !== db[index])))
+      pickedWinesSet.delete(db[index])
       console.log(pickedWines)
     }
     setLastDirection(direction)
     updateCurrentIndex(index - 1)
+    console.log(currentIndex)
+    if(currentIndex === 0){
+      console.log("DONE")
+      setPickedWines(pickedWinesSet);
+    }
   }
 
   const outOfFrame = (name, idx) => {
