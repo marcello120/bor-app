@@ -26,9 +26,6 @@ export default function Home() {
         <Button variant='secondary' href='./bor_tinder' >BorTinder</Button>
         <Button variant='secondary' href='./login' >Login</Button>
 
-
-
-
         <WaveForm></WaveForm>
         {/* <WaveTester></WaveTester> */}
         {/* <AnimTester></AnimTester> */}

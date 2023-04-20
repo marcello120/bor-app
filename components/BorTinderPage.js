@@ -3,13 +3,10 @@ import styles from '@/styles/Bortinder.module.css'
 import TinderCard from 'react-tinder-card'
 import WineCard from './WineCard'
 import { wines } from '../data/wines'
-import Image from 'next/image'
-import backIcon from '@/public/rotate-left-solid.svg'
 import ResultCard from './ResultCard'
 
-const db = wines;
 
-function BorTinderPage() {
+function BorTinderPage(props) {
 
   useEffect(() => {
     // Hide the URL address bar of the browser on page load
@@ -29,6 +26,7 @@ function BorTinderPage() {
     };
   }, []);
 
+  const db = props.wines;
 
 
   const [currentIndex, setCurrentIndex] = useState(db.length - 1)
@@ -134,14 +132,14 @@ function BorTinderPage() {
             >
               <WineCard
                 termek={wine.termek}
-                evjarat={wine.evjarat}
-                szin={wine.szin}
+                evjarat={wine.ev}
+                szin={wine.jelleg}
                 karakter={wine.karakter}
                 kategoria={wine.kategoria}
-                borvidek={wine.borvidek}
+                borvidek={wine.borviek}
                 kiszereles={wine.kiszereles}
                 ar={wine.ar}
-                imageUrl={wine.imageUrl}
+                imageUrl={wine.kep}
               />
             </TinderCard>
           ))}

@@ -32,7 +32,7 @@ function WineCard(props) {
           </div>
           <p>Évjárat: {props.evjarat}</p>
           <p>Szín: {props.szin}</p>
-          <p>Karakter: {props.karakter}</p>
+          {/* <p>Karakter: {props.karakter}</p> */}
           <p>Kategória: {props.kategoria}</p>
           <p>Borvidék: {props.borvidek}</p>
           <p>Kiszerelés: {props.kiszereles}</p>

@@ -1,7 +1,7 @@
 import BorTinderPage from '@/components/BorTinderPage'
 import React, {useEffect} from 'react'
 
-const bor_tinder = () => {
+const bor_tinder = ({wines}) => {
 
   useEffect(() => {
     // Hide the URL address bar of the browser on page load
@@ -22,9 +22,19 @@ const bor_tinder = () => {
   }, []);
   return (
     <div style={{overflow:'hidden'}}>
-      <BorTinderPage></BorTinderPage>
+      <BorTinderPage wines = {wines} ></BorTinderPage>
     </div>
   )
+}
+
+export async function getServerSideProps() {
+  
+  // Fetch data from external API
+  const res = await fetch(`http://localhost:3000/api/getXrandom`)
+  const data = await res.json()
+
+  // Pass data to the page via props
+  return { props: { wines : data } }
 }
 
 export default bor_tinder
