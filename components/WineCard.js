@@ -43,7 +43,7 @@ function WineCard(props) {
       </div>
       {!showOverlay && (
         <div className={styles.infoButton}>
-          <button className="pressable" onClick={handleImageClick}>+</button>
+          <button className="pressable" onClick={handleImageClick}>i</button>
         </div>
       )}
     </div>

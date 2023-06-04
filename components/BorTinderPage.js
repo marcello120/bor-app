@@ -11,7 +11,6 @@ function BorTinderPage(props) {
 
   const db = props.wines;
 
-
   const [currentIndex, setCurrentIndex] = useState(db.length - 1)
   const [lastDirection, setLastDirection] = useState()
   const [pickedWines, setPickedWines] = useState(new Set())
